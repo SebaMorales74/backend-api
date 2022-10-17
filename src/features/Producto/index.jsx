@@ -1,5 +1,5 @@
 import { Card, Modal, Form, Input, Button, Spin, Row, InputNumber, Col } from 'antd';
-import { EditOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusSquareOutlined, DeleteOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +19,13 @@ const Producto = () => {
             })
     }, [cambio]);
 
+    const eliminar = (props) => {
+        axios.delete('https://gd3388ff764672b-nosepo.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/' + props.id)
+            .then(response => {
+                console.log(response);
+                setCambio(true);
+            })
+    }
 
     const editar = (props) => {
         const onFinish = (values) => {
@@ -252,17 +259,18 @@ const Producto = () => {
             <Row>
                 <h1 style={{ marginRight: '5%' }}>Productos</h1>
                 <Button type="primary" onClickCapture={agregar}>Agregar producto</Button>
-                <Button type="primary" onClickCapture={()=>setCambio(true)} style={{visibility:'hidden'}}>Actualizar</Button>
+                <Button type="primary" onClickCapture={() => setCambio(true)} style={{ visibility: 'hidden' }}>Actualizar</Button>
             </Row>
-            <Row gutter={16} style={{paddingTop:'5%'}}>
+            <Row gutter={16} style={{ paddingTop: '5%' }}>
                 {producto.map((producto) => (
                     <Col className="gutter-box" key={uuidv4} >
                         <Card
                             style={{ width: '100%', marginBottom: '5%' }}
                             hoverable
-                            cover={<img alt="example" src={producto.imagen} style={{height:'10vh'}} />}
+                            cover={<img alt="example" src={producto.imagen} style={{ height: '10vh' }} />}
                             actions={[
-                                <EditOutlined key="edit" onClickCapture={() => editar(producto)} />
+                                <EditOutlined key="edit" onClickCapture={() => editar(producto)} />,
+                                <DeleteOutlined key="erase" onClickCapture={() => eliminar(producto)} />
                             ]}
                             key={producto.id}
                         >
