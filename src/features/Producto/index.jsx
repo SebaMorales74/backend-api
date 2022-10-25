@@ -5,6 +5,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import './style.css'
 const { Meta } = Card;
+const URL = 'https://gd3388ff764672b-oxqimcjoz4kig9vm.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/'
+
 
 const Producto = () => {
 
@@ -12,7 +14,7 @@ const Producto = () => {
     const [cambio, setCambio] = useState(false);
 
     useEffect(() => {
-        axios.get('https://gd3388ff764672b-nosepo.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/')
+        axios.get(URL)
             .then(response => {
                 setProductos(response.data.items);
                 setCambio(false);
@@ -20,7 +22,7 @@ const Producto = () => {
     }, [cambio]);
 
     const eliminar = (props) => {
-        axios.delete('https://gd3388ff764672b-nosepo.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/' + props.id)
+        axios.delete(URL + props.id)
             .then(response => {
                 console.log(response);
                 setCambio(true);
@@ -30,7 +32,7 @@ const Producto = () => {
     const editar = (props) => {
         const onFinish = (values) => {
             console.log(values);
-            axios.put('https://gd3388ff764672b-nosepo.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/' + values.id, values)
+            axios.put(URL + values.id, values)
                 .then(response => {
                     console.log(response);
                     setCambio(true);
@@ -66,7 +68,7 @@ const Producto = () => {
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
-                        autoComplete="off"
+                        autoComplete="on"
                     >
                         <Form.Item label="Id" name="id" noStyle>
                             <Input type='hidden' />
@@ -109,7 +111,7 @@ const Producto = () => {
                                 },
                             ]}
                         >
-                            <InputNumber type='number' />
+                            <InputNumber type='number'/>
                         </Form.Item>
 
                         <Form.Item
@@ -145,7 +147,7 @@ const Producto = () => {
     const agregar = () => {
         const onFinish = (values) => {
             console.log(values);
-            axios.post('https://gd3388ff764672b-nosepo.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/', values)
+            axios.post(URL, values)
                 .then(response => {
                     console.log(response);
                     setCambio(true)
