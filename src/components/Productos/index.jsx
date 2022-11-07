@@ -5,10 +5,10 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import './style.css'
 const { Meta } = Card;
-const URL = 'https://gd3388ff764672b-oxqimcjoz4kig9vm.adb.sa-santiago-1.oraclecloudapps.com/ords/admin/productos/'
+const URL = 'http://localhost:3001/productos'
 
 
-const Producto = () => {
+const Productos = () => {
 
     const [producto, setProductos] = useState([]);
     const [cambio, setCambio] = useState(false);
@@ -111,7 +111,7 @@ const Producto = () => {
                                 },
                             ]}
                         >
-                            <InputNumber type='number'/>
+                            <InputNumber type='number' />
                         </Form.Item>
 
                         <Form.Item
