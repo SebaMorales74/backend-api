@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Alexandria:300,400,500,700&display=swap');
+
 $primary: #8ACB88;
 $secondary: #648381;
 
@@ -7,20 +9,34 @@ $dark: #575761;
 $highlight: #FFBF46;
 $highlight-dark: #63636e;
 
+* {
+    font-family: 'Alexandria', serif;
+}
+.content>div {
+    overflow-x: hidden;
+}
+.ant-card-meta-title {
+    font-weight: 400 !important;
+}
 body {
     margin: 0px;
 }
-
 .layout {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
-
 .logo {
     max-height: 8vh;
 }
-
+.sticky {
+    position: fixed !important;
+    top: 0 !important;
+    width: 100% !important;
+}
+.sticky+.content {
+    padding-top: 102px;
+}
 .ant-layout-sider-trigger,
 footer {
     height: 9.8vh !important;
@@ -43,9 +59,11 @@ footer {
 aside.ant-layout-sider {
     background-color: $secondary !important;
 }
-
-.ant-layout-sider-trigger:hover {
+.ant-layout-sider-trigger {
     background-color: $highlight-dark !important;
+}
+.ant-layout-sider-trigger:hover {
+    background-color: #7a7a87 !important;
 }
 
 .header>.ant-typography {
@@ -58,7 +76,6 @@ aside.ant-layout-sider {
     display: inline-block !important;
     font-size: 6vh;
 }
-
 .header {
     background-color: $highlight-dark !important;
     padding: 0.3% 0 0 0.8% !important;
@@ -67,17 +84,24 @@ aside.ant-layout-sider {
     line-height: 0 !important;
 }
 
-
-.ant-layout-sider-trigger,
 footer {
     background-color: $dark !important;
     color: $light !important;
 }
 
+.ant-layout-sider-trigger {
+    overflow: 'auto';
+    position: 'fixed';
+    margin-bottom: 9.8vh;
+    left: 0;
+    z-index: 9 !important;
+}
+
 footer {
     bottom: 0 !important;
-    position: fixed;
     width: 100%;
+    position: fixed;
+    z-index: 1 !important;
 }
 
 @media screen and (max-width: 1000px) {

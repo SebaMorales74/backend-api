@@ -34,6 +34,12 @@ const App = () => {
     >
       <Header
         className="header"
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+        }}
       >
 
         <Image
@@ -44,16 +50,22 @@ const App = () => {
         <Title style={{ opacity: collapsed ? '0' : '1', transition: 'opacity 0.3s' }} level={1}>GO!ECO</Title>
       </Header>
       <Layout className="site-layout">
-        <Sider className='sider' collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Sider className='sider' collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} style={{
+          paddingTop: '9.8vh',
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
         </Sider>
         <Content
+          className='content'
+          style={{ padding: `16px 0px 12vh 216px` }}
         >
           <div
-            style={{
-              padding: '1%',
-              minHeight: 360
-            }}
           >
             <Productos />
           </div>
