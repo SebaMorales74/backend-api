@@ -1,41 +1,23 @@
-import { Card, Modal, Form, Input, Button, Row, InputNumber, Col, Image, Typography } from 'antd';
+import { Card, Modal, Form, Input, Button, Row, InputNumber, Col, Image, Typography, Result } from 'antd';
 import { EditOutlined, PlusSquareOutlined, DeleteOutlined } from '@ant-design/icons';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
+import { useGetProductosQuery, useAddProductoMutation, usePutProductoMutation, useDeleteProductoMutation } from '../api/apiSlice'
 import { v4 as uuidv4 } from 'uuid';
-
 import './styles.scss'
 
-
-const { Paragraph } = Typography
+const { Paragraph } = Typography;
 const { Meta } = Card;
 
-const Productos = () => {
-    const [producto, setProductos] = useState([]);
-    const [cambio, setCambio] = useState(false);
-
-    useEffect(() => {
-        axios.get('http://localhost:3001/productos')
-            .then(response => {
-                setProductos(response.data);
-                setCambio(false);
-            })
-    }, [cambio]);
-
+const ProductoCard = ({ content }) => {
+    const [putProducto, putRes] = usePutProductoMutation()
 
     const info = (props) => {
         const onFinish = (values) => {
-            console.log(values);
-            axios.put('http://localhost:3001/productos/' + values.id, values)
-                .then(response => {
-                    console.log(response);
+            putProducto(values)
+                .unwrap()
+                .then(() => { })
+                .then((error) => {
+                    console.log(error)
                 })
-            setCambio(true);
-        }
-
-        const onFinishFailed = (errorInfo) => {
-            console.log('Failed:', errorInfo);
         }
         Modal.info({
             title: 'Editando Producto: ' + props.nombre,
@@ -61,7 +43,6 @@ const Productos = () => {
                         'precio': props.precio,
                     }}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <Form.Item label="Id" name="id" noStyle>
@@ -136,19 +117,62 @@ const Productos = () => {
         });
     };
 
-    const success = () => {
-        const onFinish = (values) => {
-            console.log(values);
-            axios.post('http://localhost:3001/productos/', values)
-                .then(response => {
-                    console.log(response);
-                    setCambio(true)
-                })
-        }
+    const [deleteProducto, delRes] = useDeleteProductoMutation()
 
-        const onFinishFailed = (errorInfo) => {
-            console.log('Failed:', errorInfo);
-        }
+    return (
+        <Col className="gutter-box" key={uuidv4} >
+            <Card
+                style={{ width: 200, marginBottom: '5%' }}
+                hoverable
+                cover={
+                    <Image
+                        height={200}
+                        width={200}
+                        src={content.imagen}
+                        preview={false}
+                        style={{ objectFit: 'cover', padding: '10px' }}
+                    />
+                }
+                actions={[
+                    <EditOutlined key="edit" onClick={()=>info(content)} />,
+                    <DeleteOutlined key="delete" onClick={() => deleteProducto(content.id)} />
+                ]}
+                key={content.id}
+            >
+                <Meta
+                    title={`${content.nombre}`}
+                    description={
+                        <>
+                            <Paragraph>Código: #000AE{content.id}</Paragraph>
+                            <Paragraph>Descripcion: {content.descripcion}</Paragraph>
+                            <Paragraph>Precio (CLP): ${content.precio}</Paragraph>
+                        </>
+                    } />
+            </Card>
+        </Col>
+    )
+}
+
+function ListadoProductos() {
+    const [addProducto, response] = useAddProductoMutation()
+    const onSubmit = (values) => {
+        addProducto(values)
+            .unwrap()
+            .then(() => { })
+            .then((error) => {
+                console.log(error)
+            })
+    }
+
+    const {
+        data: productos,
+        isLoading,
+        isSuccess,
+        isError,
+        error,
+    } = useGetProductosQuery({ refetchOnMountOrArgChange: true })
+
+    const success = () => {
         Modal.success({
             title: 'Agregar Producto:',
             icon: <PlusSquareOutlined />,
@@ -166,11 +190,10 @@ const Productos = () => {
                     }}
                     initialValues={{
                         remember: true,
-                        'id': producto.length + 1,
+                        'id': productos.length + 1,
                         'imagen': 'https://www.svgrepo.com/show/189987/package-box.svg',
                     }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    onFinish={onSubmit}
                     autoComplete="off"
                 >
                     <Form.Item label="Id" name="id" noStyle>
@@ -241,62 +264,39 @@ const Productos = () => {
         });
     };
 
-    const remove = (producto) => {
-        axios.delete('http://localhost:3001/productos/' + producto.id)
-            .then(response => {
-                console.log(response);
-                setCambio(true)
-            })
+    let productosContent
+    if (isLoading) {
+        productosContent = (
+            <div className="loading"></div>
+        )
+    } else if (isSuccess) {
+        productosContent = productos.map((item) => {
+            return <ProductoCard content={item} key={item.id} />
+        })
+    } else if (isError) {
+        productosContent = (
+            <Result
+                status="error"
+                title="Error al cargar los productos"
+                subTitle="Porfavor, intente nuevamente."
+                extra={[
+                    <Button type="primary" key="console" onClick={() => window.location.reload()}>
+                        Recargar pagina
+                    </Button>
+                ]}
+                style={{ paddingLeft: '38%', paddingTop: '6%' }}
+            >
+            </Result>
+        )
     }
-
-
     return (
         <>
-            {
-                producto == [] ?
-                    <div class="loading"></div>
-                    :
-                    <>
-                        <Row gutter={[16, 16]} className="crudPanel">
-                            <Button type="primary" icon={<PlusSquareOutlined />} size={'large'} onClick={success}> Agregar Producto </Button>
-                        </Row>
-                        <Row gutter={16}>
-                            {producto.map((producto) => (
-                                <Col className="gutter-box" key={uuidv4} >
-                                    <Card
-                                        style={{ width: 200, marginBottom: '5%' }}
-                                        hoverable
-                                        cover={
-                                            <Image
-                                                height={200}
-                                                width={200}
-                                                src={producto.imagen}
-                                                preview={false}
-                                                style={{ objectFit: 'cover', padding: '10px' }}
-                                            />
-                                        }
-                                        actions={[
-                                            <EditOutlined key="edit" onClickCapture={() => info(producto)} />,
-                                            <DeleteOutlined key="delete" onClickCapture={() => remove(producto)}/>
-                                        ]}
-                                        key={producto.id}
-                                    >
-                                        <Meta
-                                            title={`${producto.nombre}`}
-                                            description={
-                                                <>
-                                                    <Paragraph>Código: #000AE{producto.id}</Paragraph>
-                                                    <Paragraph>Descripcion: {producto.descripcion}</Paragraph>
-                                                    <Paragraph>Precio (CLP): ${producto.precio}</Paragraph>
-                                                </>
-                                            } />
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    </>
-            }
+            <Row gutter={[16, 16]} className="crudPanel">
+                <Button type="primary" icon={<PlusSquareOutlined />} size={'large'} onClick={success} > Agregar Producto </Button>
+            </Row>
+            <Row gutter={16}>{productosContent}</Row>
         </>
     )
 }
-export default Productos;
+
+export default ListadoProductos;

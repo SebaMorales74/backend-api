@@ -24,9 +24,9 @@ $size: 100px;
 
 .loading {
     display: flex;
-    justify-content: center;
     overflow: hidden;
-    padding-top: 15%;
+    padding-top: 10%;
+    margin-left: 45%;
 }
 
 .loading::after {
