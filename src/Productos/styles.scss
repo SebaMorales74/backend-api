@@ -1,7 +1,26 @@
 $primary: #8ACB88;
 $secondary: #648381;
+$light: #E4FDE1;
 
 $size: 100px;
+
+
+.ant-btn-lg {
+    border-radius: 0px !important;
+}
+
+.ant-input-number-handler>.anticon {
+    color: $light !important;
+}
+
+.crudPanel {
+    padding: 0% 0% 1% 1%;
+}
+
+.ant-typography {
+    color: $light !important;
+    margin: 0px !important;
+}
 
 .loading {
     display: flex;

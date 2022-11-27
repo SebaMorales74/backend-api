@@ -63,7 +63,7 @@ const App = () => {
         </Sider>
         <Content
           className='content'
-          style={{ padding: `16px 0px 12vh 216px` }}
+          style={{ padding: collapsed ? `16px 0px 12vh 6rem` : `16px 0px 12vh 216px`, transition: 'padding 0.3s' }}
         >
           <div
           >
