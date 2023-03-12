@@ -1,14 +1,19 @@
 import { Card, Modal, Form, Input, Button, Row, InputNumber, Col, Image, Typography, Result } from 'antd';
 import { EditOutlined, PlusSquareOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useGetProductosQuery, useAddProductoMutation, usePutProductoMutation, useDeleteProductoMutation } from '../api/apiSlice'
 import { v4 as uuidv4 } from 'uuid';
 import './styles.scss'
+
+import {
+    useGetProductosQuery, useAddProductoMutation,
+    usePutProductoMutation, useDeleteProductoMutation
+} from '../api/apiSlice'
 
 const { Paragraph } = Typography;
 const { Meta } = Card;
 
 const ProductoCard = ({ content }) => {
     const [putProducto, putRes] = usePutProductoMutation()
+    const [deleteProducto, delRes] = useDeleteProductoMutation()
 
     const info = (props) => {
         const onFinish = (values) => {
@@ -117,8 +122,6 @@ const ProductoCard = ({ content }) => {
         });
     };
 
-    const [deleteProducto, delRes] = useDeleteProductoMutation()
-
     return (
         <Col className="gutter-box" key={uuidv4} >
             <Card
@@ -134,7 +137,7 @@ const ProductoCard = ({ content }) => {
                     />
                 }
                 actions={[
-                    <EditOutlined key="edit" onClick={()=>info(content)} />,
+                    <EditOutlined key="edit" onClick={() => info(content)} />,
                     <DeleteOutlined key="delete" onClick={() => deleteProducto(content.id)} />
                 ]}
                 key={content.id}
@@ -154,6 +157,14 @@ const ProductoCard = ({ content }) => {
 }
 
 function ListadoProductos() {
+    const {
+        data: productos,
+        isLoading,
+        isSuccess,
+        isError,
+        error,
+    } = useGetProductosQuery({ refetchOnMountOrArgChange: true })
+
     const [addProducto, response] = useAddProductoMutation()
     const onSubmit = (values) => {
         addProducto(values)
@@ -163,14 +174,6 @@ function ListadoProductos() {
                 console.log(error)
             })
     }
-
-    const {
-        data: productos,
-        isLoading,
-        isSuccess,
-        isError,
-        error,
-    } = useGetProductosQuery({ refetchOnMountOrArgChange: true })
 
     const success = () => {
         Modal.success({
@@ -292,7 +295,8 @@ function ListadoProductos() {
     return (
         <>
             <Row gutter={[16, 16]} className="crudPanel">
-                <Button type="primary" icon={<PlusSquareOutlined />} size={'large'} onClick={success} > Agregar Producto </Button>
+                <Button type="primary" icon={<PlusSquareOutlined />}
+                size={'large'} onClick={success} >Agregar Producto </Button>
             </Row>
             <Row gutter={16}>{productosContent}</Row>
         </>

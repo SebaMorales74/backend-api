@@ -43,4 +43,7 @@ export const apiSlice = createApi({
         }),
     }),
 })
-export const { useGetProductosQuery, useAddProductoMutation, usePutProductoMutation , useDeleteProductoMutation } = apiSlice
+export const {
+    useGetProductosQuery, useAddProductoMutation,
+    usePutProductoMutation, useDeleteProductoMutation
+} = apiSlice

@@ -77,7 +77,7 @@ const App = () => {
           textAlign: 'center',
         }}
       >
-        <span>GO!ECO ©2022 Creado por Club de Teconologías Didacticas</span>
+        <span>GO!ECO</span>
       </Footer>
     </Layout>
   );
